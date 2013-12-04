@@ -5,6 +5,11 @@
 #include <hashtbl.h>
 #include <hashclasses.h>
 #include <xstring.h>
+/*
+These below are technically chain included from the above includes, but better
+practice to include everything we are actually using.
+*/
+#include <vector.h>
 
 namespace fsu
 {
@@ -34,12 +39,13 @@ namespace fsu
 
     SymbolGraph ( );
     SymbolGraph ( N n );
-    //...
+    SymbolGraph ( N n , bool bucketNumPrime);
+    
   private:
     ALUGraph<N>      g_;
     HashTable<S,N,H> s2n_;
     Vector<S>        n2s_;
-    //...
+    
   }; // class SymbolGraph
   
   template < typename S , typename N >
@@ -68,17 +74,28 @@ namespace fsu
 
     SymbolDirectedGraph ( );
     SymbolDirectedGraph ( N n );
-    //...
+    SymbolDirectedGraph ( N n , bool bucketNumPrime);
+    
   private:
     ALDGraph<N>      g_;
     HashTable<S,N,H> s2n_;
     Vector<S>        n2s_;
-    //...
+    
   }; // class SymbolDirectedGraph
   
   /**\
   SymbolGraph implementation
   \**/
+  template <typename S, typename N>
+  SymbolGraph<S,N>::SymbolGraph () : g_(), s2n_(), n2s_() {}
+  
+  template <typename S, typename N>
+  SymbolGraph<S,N>::SymbolGraph ( N n )
+  : g_((size_t)n), s2n_((size_t)n, false), n2s_((size_t)n) {}
+  
+  template <typename S, typename N>
+  SymbolGraph<S,N>::SymbolGraph ( N n , bool bucketNumPrime)
+  : g_((size_t)n), s2n_((size_t)n, bucketNumPrime), n2s_((size_t)n) {}
   
   template <typename S, typename N>
   const ALUGraph<N> & SymbolGraph<S,N>::GetAbstractGraph() const
@@ -102,6 +119,16 @@ namespace fsu
   /**\
   SymbolDirectedGraph implementation
   \**/
+  template <typename S, typename N>
+  SymbolDirectedGraph<S,N>::SymbolDirectedGraph () : g_(), s2n_(), n2s_() {}
+  
+  template <typename S, typename N>
+  SymbolDirectedGraph<S,N>::SymbolDirectedGraph ( N n )
+  : g_((size_t)n), s2n_((size_t)n, false), n2s_((size_t)n) {}
+  
+  template <typename S, typename N>
+  SymbolDirectedGraph<S,N>::SymbolDirectedGraph ( N n , bool bucketNumPrime)
+  : g_((size_t)n), s2n_((size_t)n, bucketNumPrime), n2s_((size_t)n) {}
   
   template <typename S, typename N>
   const ALDGraph<N> & SymbolDirectedGraph<S,N>::GetAbstractGraph() const
