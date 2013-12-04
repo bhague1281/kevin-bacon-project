@@ -10,3 +10,5 @@ A.K.: Got SetVrtxSize and AddEdge implemented.
 A.K.: Got VrtxSize and EdgeSize implemented.
 Brian Hague (B.H.): Added multiple read protection and some relevant inclusions to moviematch.h
 B.H.: Implemented InDegree, OutDegree, Begin, and End
+B.H.: Wrote and implemented 4 functions (stated above) for SymbolDirectedGraph.
+B.H.: Defined typedef for AdjIterator. File compilable on linprog.
