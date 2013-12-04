@@ -16,3 +16,5 @@ A.K.: Impemented Push() (for both graph types). Use of rehash is VERY inefficien
 A.K.: Added a size_ variable to efficiently keep track of size and not
 inneficiently query the size from the existing containers. Logically this
 means massive runtime increases in Push() and small ones elsewhere.
+A.K.: Implemented Size() function to get size_, also fixed Push() to properly
+handle already present keys.

@@ -23,6 +23,7 @@ namespace fsu
 
     void   SetVrtxSize  (N n);
     void   AddEdge      (Vertex from, Vertex to);
+    size_t Size         () const;
     size_t VrtxSize     () const;
     size_t EdgeSize     () const;
     size_t OutDegree    (Vertex x) const;
@@ -58,6 +59,7 @@ namespace fsu
 
     void   SetVrtxSize  (N n);
     void   AddEdge      (Vertex from, Vertex to);
+    size_t Size         () const;
     size_t VrtxSize     () const;
     size_t EdgeSize     () const;
     size_t OutDegree    (Vertex x) const;
@@ -124,6 +126,12 @@ namespace fsu
   }
   
   template <typename S, typename N>
+  size_t SymbolGraph<S,N>::Size() const
+  {
+    return size_;
+  }
+  
+  template <typename S, typename N>
   size_t SymbolGraph<S,N>::VrtxSize() const
   {
     return g_.VrtxSize();
@@ -163,20 +171,23 @@ namespace fsu
   template <typename S, typename N>
   void SymbolGraph<S,N>::Push(const S& s)
   {
-    /*g_ and n2s_ always have same size, but s2n_ might be smaller, due to the
-    SetVrtxSize() expanding the former two.*/
-    if(size_ < g_.Size())
+    if(!s2n_.Includes(s))
     {
-      n2s_[size_] = s;
-      s2n_.Rehash(size_ + 1); //Do we want to rehash here? Inefficient...
+      /*g_ and n2s_ always same size, but s2n_ might be smaller, due to the
+      SetVrtxSize() expanding the former two.*/
+      if(size_ < g_.Size())
+      {
+        n2s_[size_] = s;
+        s2n_.Rehash(size_ + 1); //Do we want to rehash here? Inefficient...
+      }
+      else /*But otherwise we need to expand g_ and n2s_*/
+      {
+        g_.PushVertex();
+        n2s_.PushBack(s);
+      }
+      s2n_.Set(s, size_);
+      size_+=1;
     }
-    else /*But otherwise we need to expand g_ and n2s_*/
-    {
-      g_.PushVertex();
-      n2s_.PushBack(s);
-    }
-    s2n_.Set(s, size_);
-    size_+=1;
   }
   
   template <typename S, typename N>
@@ -239,6 +250,12 @@ namespace fsu
   }
   
   template <typename S, typename N>
+  size_t SymbolGraph<S,N>::Size() const
+  {
+    return size_;
+  }
+  
+  template <typename S, typename N>
   size_t SymbolDirectedGraph<S,N>::VrtxSize() const
   {
     return g_.VrtxSize();
@@ -279,20 +296,23 @@ namespace fsu
   template <typename S, typename N>
   void SymbolDirectedGraph<S,N>::Push(const S& s)
   {
-    /*g_ and n2s_ always have same size, but s2n_ might be smaller, due to the
-    SetVrtxSize() expanding the former two.*/
-    if(size_ < g_.Size())
+    if(!s2n_.Includes(s))
     {
-      n2s_[size_] = s;
-      s2n_.Rehash(size_ + 1); //Do we want to rehash here? Inefficient...
+      /*g_ and n2s_ always same size, but s2n_ might be smaller, due to the
+      SetVrtxSize() expanding the former two.*/
+      if(size_ < g_.Size())
+      {
+        n2s_[size_] = s;
+        s2n_.Rehash(size_ + 1); //Do we want to rehash here? Inefficient...
+      }
+      else /*But otherwise we need to expand g_ and n2s_*/
+      {
+        g_.PushVertex();
+        n2s_.PushBack(s);
+      }
+      s2n_.Set(s, size_);
+      size_+=1;
     }
-    else /*But otherwise we need to expand g_ and n2s_*/
-    {
-      g_.PushVertex();
-      n2s_.PushBack(s);
-    }
-    s2n_.Set(s, size_);
-    size_ += 1;
   }
   
   template <typename S, typename N>
