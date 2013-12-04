@@ -135,13 +135,28 @@ namespace fsu
   }
   
   template <typename S, typename N>
-  size_t OutDegree(Vertex x) const
+  size_t SymbolGraph<S,N>::OutDegree(Vertex x) const
+  {
+    return g_.InDegree(s2n_[x]);
+  }
+  
   template <typename S, typename N>
-  size_t InDegree(Vertex x) const
+  size_t SymbolGraph<S,N>::InDegree(Vertex x) const
+  {
+    return g_.InDegree(s2n_[x]);
+  }
+  
   template <typename S, typename N>
-  AdjIterator Begin(Vertex x) const
+  AdjIterator SymbolGraph<S,N>::Begin(Vertex x) const
+  {
+    return g_.Begin(s2n_[x]);
+  }
+  
   template <typename S, typename N>
-  AdjIterator End(Vertex x) const
+  AdjIterator SymbolGraph<S,N>::End(Vertex x) const
+  {
+    return g_.End(s2n_[x]);
+  }
   
   template <typename S, typename N>
   void Push(const S& s)
