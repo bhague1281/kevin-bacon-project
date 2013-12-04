@@ -9,7 +9,7 @@ proj    = .
 
 incpath = -I$(proj) -I$(cpp) -I$(tcpp)
 
-CC      = g++47 -std=c++11 -Wall -Wextra
+CC      = g++47 -std=c++11 -Wall -Wextra $(incpath)
 
 #all:  kevinbacon.x
 
