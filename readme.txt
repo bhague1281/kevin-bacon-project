@@ -9,3 +9,4 @@ A.K.: Got constructors implemented in symgraph.h.
 A.K.: Got SetVrtxSize and AddEdge implemented.
 A.K.: Got VrtxSize and EdgeSize implemented.
 Brian Hague (B.H.): Added multiple read protection and some relevant inclusions to moviematch.h
+B.H.: Implemented InDegree, OutDegree, Begin, and End
