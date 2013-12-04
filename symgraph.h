@@ -12,9 +12,8 @@ namespace fsu
   class SymbolGraph
   {
   public:
-    typedef S      Vertex;
-    typedef xxxxx  AdjIterator;
-    //typedef typename Graph::AdjIterator AdjIterator;
+    typedef S                          Vertex;
+    typedef xxxxx                      AdjIterator;
     typedef hashclass::MM<fsu::String> H;
 
     void   SetVrtxSize  (N n);
@@ -47,8 +46,8 @@ namespace fsu
   class SymbolDirectedGraph
   {
   public:
-    typedef S             Vertex;
-    typedef xxxxx         AdjIterator;
+    typedef S                          Vertex;
+    typedef xxxxx                      AdjIterator;
     typedef hashclass::MM<fsu::String> H;
 
     void   SetVrtxSize  (N n);
@@ -82,19 +81,20 @@ namespace fsu
   \**/
   
   template <typename S, typename N>
-  typename const ALDGraph<N> & SymbolGraph<S,N>::GetAbstractGraph() const
+  const ALUGraph<N> & SymbolGraph<S,N>::GetAbstractGraph() const
   {
     return g_;
   }
   
-  template <typename S, typename N, class H>
-  typename const HashTable<S,N,H> & SymbolGraph<S,N>::GetSymbolMap() const
+  template <typename S, typename N>
+  const HashTable <S,N,hashclass::MM <fsu::String> > &
+    SymbolGraph<S,N>::GetSymbolMap() const
   {
     return s2n_;
   }
   
   template <typename S, typename N>
-  typename const Vector<S> & SymbolGraph<S,N>::GetVertexMap() const
+  const Vector<S> & SymbolGraph<S,N>::GetVertexMap() const
   {
     return n2s_;
   }
@@ -104,19 +104,20 @@ namespace fsu
   \**/
   
   template <typename S, typename N>
-  typename const ALDGraph<N> & SymbolDirectedGraph<S,N>::GetAbstractGraph() const
+  const ALDGraph<N> & SymbolDirectedGraph<S,N>::GetAbstractGraph() const
   {
     return g_;
   }
   
-  template <typename S, typename N, class H>
-  typename const HashTable<S,N,H> & SymbolDirectedGraph<S,N>::GetSymbolMap() const
+  template < typename S, typename N >
+  const HashTable <S,N,hashclass::MM <fsu::String> > &
+    SymbolDirectedGraph<S,N>::GetSymbolMap() const
   {
     return s2n_;
   }
   
   template <typename S, typename N>
-  typename const Vector<S> & SymbolDirectedGraph<S,N>::GetVertexMap() const
+  const Vector<S> & SymbolDirectedGraph<S,N>::GetVertexMap() const
   {
     return n2s_;
   }
