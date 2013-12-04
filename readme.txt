@@ -13,3 +13,6 @@ B.H.: Implemented InDegree, OutDegree, Begin, and End
 B.H.: Wrote and implemented 4 functions (stated above) for SymbolDirectedGraph.
 B.H.: Defined typedef for AdjIterator. File compilable on linprog.
 A.K.: Impemented Push() (for both graph types). Use of rehash is VERY inefficient, for insert, but will help with read. Can be removed if needed.
+A.K.: Added a size_ variable to efficiently keep track of size and not
+inneficiently query the size from the existing containers. Logically this
+means massive runtime increases in Push() and small ones elsewhere.

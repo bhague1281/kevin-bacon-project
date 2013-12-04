@@ -45,7 +45,7 @@ namespace fsu
     ALUGraph<N>      g_;
     HashTable<S,N,H> s2n_;
     Vector<S>        n2s_;
-    
+    size_t           size_; //Added for performance gains.
   }; // class SymbolGraph
   
   template < typename S , typename N >
@@ -80,22 +80,22 @@ namespace fsu
     ALDGraph<N>      g_;
     HashTable<S,N,H> s2n_;
     Vector<S>        n2s_;
-    
+    size_t           size_; //Added for performance gains.
   }; // class SymbolDirectedGraph
   
   /**\
   SymbolGraph implementation
   \**/
   template <typename S, typename N>
-  SymbolGraph<S,N>::SymbolGraph () : g_(), s2n_(), n2s_() {}
+  SymbolGraph<S,N>::SymbolGraph () : g_(), s2n_(), n2s_(), size_(0) {}
   
   template <typename S, typename N>
   SymbolGraph<S,N>::SymbolGraph ( N n )
-  : g_((size_t)n), s2n_((size_t)n, false), n2s_((size_t)n) {}
+  : g_((size_t)n), s2n_((size_t)n, false), n2s_((size_t)n), size_(n) {}
   
   template <typename S, typename N>
   SymbolGraph<S,N>::SymbolGraph ( N n , bool bucketNumPrime)
-  : g_((size_t)n), s2n_((size_t)n, bucketNumPrime), n2s_((size_t)n) {}
+  : g_((size_t)n), s2n_((size_t)n, bucketNumPrime), n2s_((size_t)n), size_(n){}
   
   template <typename S, typename N>
   void SymbolGraph<S,N>::SetVrtxSize(N n)
@@ -104,7 +104,7 @@ namespace fsu
     n2s_.SetSize((size_t)n);
     s2n_.Rehash((size_t)n);
     /*Rehash doesn't remove excess elements, like fsu::Vector's SetSize()*/
-    if(s2n_.Size() > (size_t)n)
+    if(size_ > n)
     {
       /*So clear out hashtable and repopulate.*/
       s2n_.Clear();
@@ -113,6 +113,7 @@ namespace fsu
         s2n_.Set(n2s_[i], (N)i); /*n2s_[i] is string/key, i is number/data*/
       }
     }
+    size_ = n;
   }
   
   template <typename S, typename N>
@@ -162,21 +163,20 @@ namespace fsu
   template <typename S, typename N>
   void SymbolGraph<S,N>::Push(const S& s)
   {
-    /*If there are n entries in s2n_, the next elements' index is n*/
-    size_t newIndex = s2n_.Size();
     /*g_ and n2s_ always have same size, but s2n_ might be smaller, due to the
     SetVrtxSize() expanding the former two.*/
-    if(newIndex < g_.Size())
+    if(size_ < g_.Size())
     {
-      n2s_[newIndex] = s;
-      s2n_.Rehash(newIndex + 1); //Do we want to rehash here? Inefficient...
+      n2s_[size_] = s;
+      s2n_.Rehash(size_ + 1); //Do we want to rehash here? Inefficient...
     }
     else /*But otherwise we need to expand g_ and n2s_*/
     {
       g_.PushVertex();
       n2s_.PushBack(s);
     }
-    s2n_.Set(s, newIndex);
+    s2n_.Set(s, size_);
+    size_+=1;
   }
   
   template <typename S, typename N>
@@ -219,7 +219,7 @@ namespace fsu
     n2s_.SetSize((size_t)n);
     s2n_.Rehash((size_t)n);
     /*Rehash doesn't remove excess elements, like fsu::Vector's SetSize()*/
-    if(s2n_.Size() > (size_t)n)
+    if(size_ > n)
     {
       /*So clear out hashtable and repopulate.*/
       s2n_.Clear();
@@ -228,6 +228,7 @@ namespace fsu
         s2n_.Set(n2s_[i], (N)i); /*n2s_[i] is string/key, i is number/data*/
       }
     }
+    size_ = n;
   }
   
   template <typename S, typename N>
@@ -278,21 +279,20 @@ namespace fsu
   template <typename S, typename N>
   void SymbolDirectedGraph<S,N>::Push(const S& s)
   {
-    /*If there are n entries in s2n_, the next elements' index is n*/
-    size_t newIndex = s2n_.Size();
     /*g_ and n2s_ always have same size, but s2n_ might be smaller, due to the
     SetVrtxSize() expanding the former two.*/
-    if(newIndex < g_.Size())
+    if(size_ < g_.Size())
     {
-      n2s_[newIndex] = s;
-      s2n_.Rehash(newIndex + 1); //Do we want to rehash here? Inefficient...
+      n2s_[size_] = s;
+      s2n_.Rehash(size_ + 1); //Do we want to rehash here? Inefficient...
     }
     else /*But otherwise we need to expand g_ and n2s_*/
     {
       g_.PushVertex();
       n2s_.PushBack(s);
     }
-    s2n_.Set(s, newIndex);
+    s2n_.Set(s, size_);
+    size_ += 1;
   }
   
   template <typename S, typename N>
