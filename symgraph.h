@@ -98,6 +98,38 @@ namespace fsu
   : g_((size_t)n), s2n_((size_t)n, bucketNumPrime), n2s_((size_t)n) {}
   
   template <typename S, typename N>
+  void SetVrtxSize(N n)
+  {
+    g_.SetVrtxSize((size_t)n);
+    n2s_.SetSize((size_t)n);
+    s2n_.Rehash((size_t)n);
+    /*Rehash doesn't remove excess elements.*/
+    if(s2n_.Size() > (size_t)n)
+    {
+      /*So clear out hashtable and repopulate.*/
+      s2n_.Clear();
+    }
+  }
+  
+  template <typename S, typename N>
+  void AddEdge(Vertex from, Vertex to)
+  template <typename S, typename N>
+  size_t VrtxSize() const
+  template <typename S, typename N>
+  size_t EdgeSize() const
+  template <typename S, typename N>
+  size_t OutDegree(Vertex x) const
+  template <typename S, typename N>
+  size_t InDegree(Vertex x) const
+  template <typename S, typename N>
+  AdjIterator Begin(Vertex x) const
+  template <typename S, typename N>
+  AdjIterator End(Vertex x) const
+  
+  template <typename S, typename N>
+  void Push(const S& s)
+  
+  template <typename S, typename N>
   const ALUGraph<N> & SymbolGraph<S,N>::GetAbstractGraph() const
   {
     return g_;
