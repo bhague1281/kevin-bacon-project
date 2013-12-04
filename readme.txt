@@ -6,3 +6,4 @@ A.K.: Fixed makefile draft CC line to include $(incpath)
 A.K.: Got template declarations right in symgraph.h
 A.K.: Got template declarations fully right in symgraph.h (needed the hashmap returning functions properly declared still).
 A.K.: Got constructors implemented in symgraph.h.
+A.K.: Got SetVrtxSize and AddEdge implemented.
