@@ -19,7 +19,7 @@ namespace fsu
   public:
     typedef S                                 Vertex;
     typedef typename ALUGraph<N>::AdjIterator AdjIterator;
-    typedef hashclass::MM<fsu::String> H;
+    typedef hashclass::MM<fsu::String>        H;
 
     void   SetVrtxSize  (N n);
     void   AddEdge      (Vertex from, Vertex to);
@@ -54,7 +54,7 @@ namespace fsu
   public:
     typedef S                                 Vertex;
     typedef typename ALDGraph<N>::AdjIterator AdjIterator;
-    typedef hashclass::MM<fsu::String> H;
+    typedef hashclass::MM<fsu::String>        H;
 
     void   SetVrtxSize  (N n);
     void   AddEdge      (Vertex from, Vertex to);
@@ -162,7 +162,21 @@ namespace fsu
   template <typename S, typename N>
   void SymbolGraph<S,N>::Push(const S& s)
   {
-    //to be implemented...
+    /*If there are n entries in s2n_, the next elements' index is n*/
+    size_t newIndex = s2n_.Size();
+    /*g_ and n2s_ always have same size, but s2n_ might be smaller, due to the
+    SetVrtxSize() expanding the former two.*/
+    if(newIndex < g_.Size())
+    {
+      n2s_[newIndex] = s;
+      s2n_.Rehash(newIndex + 1); //Do we want to rehash here? Inefficient...
+    }
+    else /*But otherwise we need to expand g_ and n2s_*/
+    {
+      g_.PushVertex();
+      n2s_.PushBack(s);
+    }
+    s2n_.Set(s, newIndex);
   }
   
   template <typename S, typename N>
@@ -259,6 +273,26 @@ namespace fsu
     SymbolDirectedGraph<S,N>::End(Vertex x) const
   {
     return g_.End(s2n_[x]);
+  }
+  
+  template <typename S, typename N>
+  void SymbolDirectedGraph<S,N>::Push(const S& s)
+  {
+    /*If there are n entries in s2n_, the next elements' index is n*/
+    size_t newIndex = s2n_.Size();
+    /*g_ and n2s_ always have same size, but s2n_ might be smaller, due to the
+    SetVrtxSize() expanding the former two.*/
+    if(newIndex < g_.Size())
+    {
+      n2s_[newIndex] = s;
+      s2n_.Rehash(newIndex + 1); //Do we want to rehash here? Inefficient...
+    }
+    else /*But otherwise we need to expand g_ and n2s_*/
+    {
+      g_.PushVertex();
+      n2s_.PushBack(s);
+    }
+    s2n_.Set(s, newIndex);
   }
   
   template <typename S, typename N>

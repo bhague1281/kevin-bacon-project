@@ -1,4 +1,4 @@
-Bryan Tanner (B.T.) initiated repo on Bitbucket, created first draft of makefile
+Bryan Tanner (B.T.): initiated repo on Bitbucket, created first draft of makefile
 Alexander Kozhevnikov (A.K): Beginning work on symgraph.h
 A.K.: Copied the project writeup class definitions into the relevant .h files as a start.
 A.K.: Added SymbolDirectedGraph definition.
@@ -12,3 +12,4 @@ Brian Hague (B.H.): Added multiple read protection and some relevant inclusions 
 B.H.: Implemented InDegree, OutDegree, Begin, and End
 B.H.: Wrote and implemented 4 functions (stated above) for SymbolDirectedGraph.
 B.H.: Defined typedef for AdjIterator. File compilable on linprog.
+A.K.: Impemented Push() (for both graph types). Use of rehash is VERY inefficient, for insert, but will help with read. Can be removed if needed.
