@@ -17,8 +17,8 @@ namespace fsu
   class SymbolGraph
   {
   public:
-    typedef S                          Vertex;
-    typedef xxxxx                      AdjIterator;
+    typedef S                                 Vertex;
+    typedef typename ALUGraph<N>::AdjIterator AdjIterator;
     typedef hashclass::MM<fsu::String> H;
 
     void   SetVrtxSize  (N n);
@@ -52,8 +52,8 @@ namespace fsu
   class SymbolDirectedGraph
   {
   public:
-    typedef S                          Vertex;
-    typedef xxxxx                      AdjIterator;
+    typedef S                                 Vertex;
+    typedef typename ALDGraph<N>::AdjIterator AdjIterator;
     typedef hashclass::MM<fsu::String> H;
 
     void   SetVrtxSize  (N n);
@@ -137,7 +137,7 @@ namespace fsu
   template <typename S, typename N>
   size_t SymbolGraph<S,N>::OutDegree(Vertex x) const
   {
-    return g_.InDegree(s2n_[x]);
+    return g_.OutDegree(s2n_[x]);
   }
   
   template <typename S, typename N>
@@ -147,19 +147,23 @@ namespace fsu
   }
   
   template <typename S, typename N>
-  AdjIterator SymbolGraph<S,N>::Begin(Vertex x) const
+  typename SymbolGraph<S,N>::AdjIterator SymbolGraph<S,N>::Begin(Vertex x)
+    const
   {
     return g_.Begin(s2n_[x]);
   }
   
   template <typename S, typename N>
-  AdjIterator SymbolGraph<S,N>::End(Vertex x) const
+  typename SymbolGraph<S,N>::AdjIterator SymbolGraph<S,N>::End(Vertex x) const
   {
     return g_.End(s2n_[x]);
   }
   
   template <typename S, typename N>
-  void Push(const S& s)
+  void SymbolGraph<S,N>::Push(const S& s)
+  {
+    //to be implemented...
+  }
   
   template <typename S, typename N>
   const ALUGraph<N> & SymbolGraph<S,N>::GetAbstractGraph() const
@@ -229,6 +233,32 @@ namespace fsu
   size_t SymbolDirectedGraph<S,N>::EdgeSize() const
   {
     return g_.EdgeSize();
+  }
+
+  template <typename S, typename N>
+  size_t SymbolDirectedGraph<S,N>::OutDegree(Vertex x) const
+  {
+    return g_.OutDegree(s2n_[x]);
+  }
+
+  template <typename S, typename N>
+  size_t SymbolDirectedGraph<S,N>::InDegree(Vertex x) const
+  {
+    return g_.InDegree(s2n_[x]);
+  }
+
+  template <typename S, typename N>
+  typename SymbolDirectedGraph<S,N>::AdjIterator
+    SymbolDirectedGraph<S,N>::Begin(Vertex x) const
+  {
+    return g_.Begin(s2n_[x]);
+  }
+
+  template <typename S, typename N>
+  typename SymbolDirectedGraph<S,N>::AdjIterator
+    SymbolDirectedGraph<S,N>::End(Vertex x) const
+  {
+    return g_.End(s2n_[x]);
   }
   
   template <typename S, typename N>
