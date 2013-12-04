@@ -1,3 +1,9 @@
+#ifndef _MOVIEMATCH_H
+#define _MOVIEMATCH_H
+
+#include <string>
+#include <symgraph.h>
+
 class MovieMatch
 {
 public:
@@ -24,3 +30,4 @@ private:
   ...
 };
 
+#endif
