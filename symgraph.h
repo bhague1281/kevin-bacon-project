@@ -123,9 +123,17 @@ namespace fsu
   }
   
   template <typename S, typename N>
-  size_t VrtxSize() const
+  size_t SymbolGraph<S,N>::VrtxSize() const
+  {
+    return g_.VrtxSize();
+  }
+  
   template <typename S, typename N>
-  size_t EdgeSize() const
+  size_t SymbolGraph<S,N>::EdgeSize() const
+  {
+    return g_.EdgeSize();
+  }
+  
   template <typename S, typename N>
   size_t OutDegree(Vertex x) const
   template <typename S, typename N>
@@ -194,6 +202,18 @@ namespace fsu
   {
     /*Just the internal graph's 'AddEdge' but lookup vertex name to index.*/
     g_.AddEdge(s2n_.Get(from), s2n_.Get(to));
+  }
+  
+  template <typename S, typename N>
+  size_t SymbolDirectedGraph<S,N>::VrtxSize() const
+  {
+    return g_.VrtxSize();
+  }
+  
+  template <typename S, typename N>
+  size_t SymbolDirectedGraph<S,N>::EdgeSize() const
+  {
+    return g_.EdgeSize();
   }
   
   template <typename S, typename N>
