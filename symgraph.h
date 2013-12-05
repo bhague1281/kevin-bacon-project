@@ -89,14 +89,14 @@ namespace fsu
   SymbolGraph implementation
   \**/
   template <typename S, typename N>
-  SymbolGraph<S,N>::SymbolGraph () : g_(), s2n_(), n2s_(), size_(0) {}
+  SymbolGraph<S,N>::SymbolGraph () : g_(), s2n_(1), n2s_(), size_(0) {}
   
   template <typename S, typename N>
-  SymbolGraph<S,N>::SymbolGraph ( N n )
-  : g_((size_t)n), s2n_((size_t)n, false), n2s_((size_t)n), size_(n) {}
+  SymbolGraph<S,N>::SymbolGraph (N n)
+  : g_((size_t)n), s2n_((size_t)n), n2s_((size_t)n), size_(n) {}
   
   template <typename S, typename N>
-  SymbolGraph<S,N>::SymbolGraph ( N n , bool bucketNumPrime)
+  SymbolGraph<S,N>::SymbolGraph (N n , bool bucketNumPrime)
   : g_((size_t)n), s2n_((size_t)n, bucketNumPrime), n2s_((size_t)n), size_(n){}
   
   template <typename S, typename N>
@@ -112,7 +112,7 @@ namespace fsu
       s2n_.Clear();
       for(size_t i = 0; i < n2s_.Size(); i+=1)
       {
-        s2n_.Set(n2s_[i], (N)i); /*n2s_[i] is string/key, i is number/data*/
+        s2n_.Put(n2s_[i], (N)i); /*n2s_[i] is string/key, i is number/data*/
       }
     }
     size_ = n;
@@ -185,7 +185,7 @@ namespace fsu
         g_.PushVertex();
         n2s_.PushBack(s);
       }
-      s2n_.Set(s, size_);
+      s2n_.Put(s, size_);
       size_+=1;
     }
   }
@@ -213,14 +213,14 @@ namespace fsu
   SymbolDirectedGraph implementation
   \**/
   template <typename S, typename N>
-  SymbolDirectedGraph<S,N>::SymbolDirectedGraph () : g_(), s2n_(), n2s_() {}
+  SymbolDirectedGraph<S,N>::SymbolDirectedGraph() : g_(), s2n_(1), n2s_() {}
   
   template <typename S, typename N>
-  SymbolDirectedGraph<S,N>::SymbolDirectedGraph ( N n )
-  : g_((size_t)n), s2n_((size_t)n, false), n2s_((size_t)n) {}
+  SymbolDirectedGraph<S,N>::SymbolDirectedGraph(N n)
+  : g_((size_t)n), s2n_((size_t)n), n2s_((size_t)n) {}
   
   template <typename S, typename N>
-  SymbolDirectedGraph<S,N>::SymbolDirectedGraph ( N n , bool bucketNumPrime)
+  SymbolDirectedGraph<S,N>::SymbolDirectedGraph (N n, bool bucketNumPrime)
   : g_((size_t)n), s2n_((size_t)n, bucketNumPrime), n2s_((size_t)n) {}
   
   template <typename S, typename N>
@@ -236,7 +236,7 @@ namespace fsu
       s2n_.Clear();
       for(size_t i = 0; i < n2s_.Size(); i+=1)
       {
-        s2n_.Set(n2s_[i], (N)i); /*n2s_[i] is string/key, i is number/data*/
+        s2n_.Put(n2s_[i], (N)i); /*n2s_[i] is string/key, i is number/data*/
       }
       size_ = n;
     }
@@ -310,7 +310,7 @@ namespace fsu
         g_.PushVertex();
         n2s_.PushBack(s);
       }
-      s2n_.Set(s, size_);
+      s2n_.Put(s, size_);
       size_+=1;
     }
   }
