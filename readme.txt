@@ -19,3 +19,6 @@ means massive runtime increases in Push() and small ones elsewhere.
 A.K.: Implemented Size() function to get size_, also fixed Push() to properly
 handle already present keys.
 A.K.: Fixed Push() even more properly.
+A.K.: Fixed symgraph.h constructors (bug didn't surface until trying to
+compile moviematch.h).
+A.K.: Made helper functions in MovieMatch for string parsing.
