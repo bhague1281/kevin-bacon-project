@@ -250,7 +250,7 @@ namespace fsu
   }
   
   template <typename S, typename N>
-  size_t SymbolGraph<S,N>::Size() const
+  size_t SymbolDirectedGraph<S,N>::Size() const
   {
     return size_;
   }
