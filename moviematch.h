@@ -4,7 +4,7 @@
 #include <iostream>
 #include <fstream>
 #include <cstring>
-#include <cstdlib> /*For "exit()", not actually needed.*/
+#include <cstdlib> /*For "exit()", used but not really needed.*/
 #include <xstring.h>
 #include <symgraph.h>
 
@@ -18,13 +18,7 @@ class MovieMatch
 {
 public:
 
-  MovieMatch (char const * baseActor) : baseActor_(0)
-  {
-    size_t length = strlen(baseActor);
-    baseActor_ = new char [length + 1];
-    baseActor_[length] = '\0';
-    strcpy(baseActor_,baseActor);
-  }
+  MovieMatch (char const * baseActor);
 
   void Load (char const * filename);
   // loads a movie/actor file
@@ -36,20 +30,33 @@ public:
 
 private:
   char* baseActor_;
-  fsu::SymbolGraph <fsu::String, size_t> sg_;
+  typename fsu::SymbolGraph <fsu::String, size_t> sg_;
   
   int ParseSubStr(std::istream & is, fsu::String & str);
   char * ResizeCStr(char * cstr, size_t sizeOld, size_t sizeNew);
   
 };
 
+MovieMatch::MovieMatch(char const * baseActor) : baseActor_(0), sg_()
+{
+  size_t length = strlen(baseActor);
+  baseActor_ = new char [length + 1];
+  baseActor_[length] = '\0';
+  strcpy(baseActor_,baseActor);
+  //sg_();
+}
+
+
 void MovieMatch::Load(char const * filename)
 {
   std::ifstream infile(filename);
-  /*Variant one*/
-  fsu::String * str = new fsu::String();
-  size_t graphCap = dEF_SIZE; /*Current capacity of the graph*/
+  /*Variant one (there might be others coded later for funsies*/
+  fsu::String curMovie, str();
+  int delim;
+  bool movieNext = true;
+  size_t i, graphCap = dEF_SIZE; /*Current capacity of the graph*/
   sg_.SetVrtxSize(graphCap);
+  /*One pass, creates vertices and edges as it goes, but without*/
   while(infile.good())
   {
     /*If size reaches capacity, multiply capacity and resize graph.*/
@@ -63,11 +70,28 @@ void MovieMatch::Load(char const * filename)
       std::cerr << eRR_GRAPH_CAP << wTF;
       exit(1); /*Omfg abort everything*/
     }
+    /*Get movie title or actor name*/
+    delim = ParseSubStr(infile, str);
+    /*both actors and movies are vertexes. Push() accounts for duplicates.*/
+    sg_.Push(str);
     
-    /*Get movie title*/
-    std::cout << ParseSubStr(infile, *str);
+    if(movieNext) /*Got a movie, prepare to get actors next.*/
+    {
+      curMovie = str;
+      movieNext = false;
+    }
+    else /*Got an actor, so need to link*/
+    {
+      sg_.AddEdge(curMovie, str);
+    }
+    
+    if(delim == '\n') /*Movie records at the beginning of every line*/
+    {
+      movieNext = true;
+    }
   }
   
+  infile.close();
 }
 
 /*Herein lies the biggest reinvention of many wheels of this project.

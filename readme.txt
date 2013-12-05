@@ -24,6 +24,6 @@ compile moviematch.h).
 A.K.: Made helper functions in MovieMatch for string parsing.
 B.T.: Committed a test program into the tree.
 A.K.: Made makefile as it should be, given that moviematch.h and symgraph.h are
-template headers. Left old versions of stuff commented out. Added optional
-rehash operand to the setVrtxSize function, left size-only parameterized one
-as a wrapper around the new one.
+template headers. Left old versions of stuff commented out.
+Added optional rehash operand to the setVrtxSize function, left size-only parameterized one as a wrapper around the new one.
+Finished moviematch.h Load(), but can't test because compile errors.
