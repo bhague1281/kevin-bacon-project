@@ -17,11 +17,12 @@ namespace fsu
   class SymbolGraph
   {
   public:
-    typedef S                                 Vertex;
-    typedef typename ALUGraph<N>::AdjIterator AdjIterator;
-    typedef hashclass::MM<fsu::String>        H;
+    typedef S                                   Vertex;
+    typedef typename ALUGraph<N>::AdjIterator   AdjIterator;
+    typedef hashclass::MM<fsu::String>          H;
 
     void   SetVrtxSize  (N n);
+    void   SetVrtxSize  (N n, bool rehash);
     void   AddEdge      (Vertex from, Vertex to);
     size_t Size         () const;
     size_t VrtxSize     () const;
@@ -53,11 +54,12 @@ namespace fsu
   class SymbolDirectedGraph
   {
   public:
-    typedef S                                 Vertex;
-    typedef typename ALDGraph<N>::AdjIterator AdjIterator;
-    typedef hashclass::MM<fsu::String>        H;
+    typedef S                                   Vertex;
+    typedef typename ALDGraph<N>::AdjIterator   AdjIterator;
+    typedef typename hashclass::MM<fsu::String> H;
 
     void   SetVrtxSize  (N n);
+    void   SetVrtxSize  (N n, bool rehash);
     void   AddEdge      (Vertex from, Vertex to);
     size_t Size         () const;
     size_t VrtxSize     () const;
@@ -102,9 +104,18 @@ namespace fsu
   template <typename S, typename N>
   void SymbolGraph<S,N>::SetVrtxSize(N n)
   {
+    SetVrtxSize(n, 1);
+  }
+
+  template <typename S, typename N>
+  void SymbolGraph<S,N>::SetVrtxSize(N n, bool rehash)
+  {
     g_.SetVrtxSize((size_t)n);
     n2s_.SetSize((size_t)n);
-    s2n_.Rehash((size_t)n);
+    if(rehash)
+    {
+      s2n_.Rehash((size_t)n);
+    }
     /*Rehash doesn't remove excess elements, like fsu::Vector's SetSize()*/
     if(size_ > n)
     {
@@ -227,9 +238,18 @@ namespace fsu
   template <typename S, typename N>
   void SymbolDirectedGraph<S,N>::SetVrtxSize(N n)
   {
+    SetVrtxSize(n, 1);
+  }
+
+  template <typename S, typename N>
+  void SymbolDirectedGraph<S,N>::SetVrtxSize(N n, bool rehash)
+  {
     g_.SetVrtxSize((size_t)n);
     n2s_.SetSize((size_t)n);
-    s2n_.Rehash((size_t)n);
+    if(rehash)
+    {
+      s2n_.Rehash((size_t)n);
+    }
     /*Rehash doesn't remove excess elements, like fsu::Vector's SetSize()*/
     if(size_ > n)
     {
