@@ -238,8 +238,8 @@ namespace fsu
       {
         s2n_.Set(n2s_[i], (N)i); /*n2s_[i] is string/key, i is number/data*/
       }
+      size_ = n;
     }
-    size_ = n;
   }
   
   template <typename S, typename N>
