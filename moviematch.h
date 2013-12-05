@@ -4,6 +4,7 @@
 #include <iostream>
 #include <fstream>
 #include <cstring>
+#include <cstdlib> /*For "exit()", not actually needed.*/
 #include <xstring.h>
 #include <symgraph.h>
 
@@ -46,7 +47,7 @@ void MovieMatch::Load(char const * filename)
 {
   std::ifstream infile(filename);
   /*Variant one*/
-  //fsu::String * str = ;
+  fsu::String * str = new fsu::String();
   size_t graphCap = dEF_SIZE; /*Current capacity of the graph*/
   sg_.SetVrtxSize(graphCap);
   while(infile.good())
@@ -64,7 +65,7 @@ void MovieMatch::Load(char const * filename)
     }
     
     /*Get movie title*/
-    
+    std::cout << ParseSubStr(infile, *str);
   }
   
 }

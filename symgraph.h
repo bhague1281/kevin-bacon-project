@@ -89,14 +89,14 @@ namespace fsu
   SymbolGraph implementation
   \**/
   template <typename S, typename N>
-  SymbolGraph<S,N>::SymbolGraph () : g_(), s2n_(1), n2s_(), size_(0) {}
+  SymbolGraph<S,N>::SymbolGraph() : g_(), s2n_(1), n2s_(), size_(0) {}
   
   template <typename S, typename N>
-  SymbolGraph<S,N>::SymbolGraph (N n)
+  SymbolGraph<S,N>::SymbolGraph(N n)
   : g_((size_t)n), s2n_((size_t)n), n2s_((size_t)n), size_(n) {}
   
   template <typename S, typename N>
-  SymbolGraph<S,N>::SymbolGraph (N n , bool bucketNumPrime)
+  SymbolGraph<S,N>::SymbolGraph(N n , bool bucketNumPrime)
   : g_((size_t)n), s2n_((size_t)n, bucketNumPrime), n2s_((size_t)n), size_(n){}
   
   template <typename S, typename N>
@@ -213,15 +213,16 @@ namespace fsu
   SymbolDirectedGraph implementation
   \**/
   template <typename S, typename N>
-  SymbolDirectedGraph<S,N>::SymbolDirectedGraph() : g_(), s2n_(1), n2s_() {}
+  SymbolDirectedGraph<S,N>::SymbolDirectedGraph()
+  : g_(), s2n_(1), n2s_(), size_(0) {}
   
   template <typename S, typename N>
   SymbolDirectedGraph<S,N>::SymbolDirectedGraph(N n)
-  : g_((size_t)n), s2n_((size_t)n), n2s_((size_t)n) {}
+  : g_((size_t)n), s2n_((size_t)n), n2s_((size_t)n), size_(n) {}
   
   template <typename S, typename N>
-  SymbolDirectedGraph<S,N>::SymbolDirectedGraph (N n, bool bucketNumPrime)
-  : g_((size_t)n), s2n_((size_t)n, bucketNumPrime), n2s_((size_t)n) {}
+  SymbolDirectedGraph<S,N>::SymbolDirectedGraph(N n, bool bucketNumPrime)
+  : g_((size_t)n), s2n_((size_t)n, bucketNumPrime), n2s_((size_t)n), size_(n){}
   
   template <typename S, typename N>
   void SymbolDirectedGraph<S,N>::SetVrtxSize(N n)
