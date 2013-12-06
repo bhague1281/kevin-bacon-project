@@ -12,6 +12,7 @@ size_t const dEF_SIZE = 128;
 size_t const dEF_MULT = 2;
 char const * const eRR_GRAPH_CAP = "Error: Graph capacity smaller than graph!\n";
 char const * const eRR_STR_CAP = "Error: String Parser: i > strSize!\n";
+char const * const eRR_READ_FILE = "Error: File read failed!\n";
 char const * const wTF = "This should never happen!\n";
 
 class MovieMatch
@@ -51,10 +52,10 @@ void MovieMatch::Load(char const * filename)
 {
   std::ifstream infile(filename);
   /*Variant one (there might be others coded later for funsies*/
-  fsu::String curMovie, str();
+  fsu::String curMovie = fsu::String(), str = fsu::String();
   int delim;
   bool movieNext = true;
-  size_t i, graphCap = dEF_SIZE; /*Current capacity of the graph*/
+  size_t graphCap = dEF_SIZE; /*Current capacity of the graph*/
   sg_.SetVrtxSize(graphCap);
   /*One pass, creates vertices and edges as it goes, but without*/
   while(infile.good())
@@ -90,7 +91,10 @@ void MovieMatch::Load(char const * filename)
       movieNext = true;
     }
   }
-  
+  if(infile.fail())
+  {
+    std::cerr << eRR_READ_FILE;
+  }
   infile.close();
 }
 

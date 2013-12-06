@@ -182,11 +182,12 @@ namespace fsu
   template <typename S, typename N>
   void SymbolGraph<S,N>::Push(const S& s)
   {
-    if(!s2n_.Includes(s))
+    N dump = N();
+    if(!s2n_.Retrieve(s, dump))
     {
       /*g_ and n2s_ always same size, but s2n_ might be smaller, due to the
       SetVrtxSize() expanding the former two.*/
-      if(size_ < g_.Size())
+      if(size_ < n2s_.Size())
       {
         n2s_[size_] = s;
         s2n_.Rehash(size_ + 1); //Do we want to rehash here? Inefficient...

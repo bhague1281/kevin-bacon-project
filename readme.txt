@@ -27,3 +27,4 @@ A.K.: Made makefile as it should be, given that moviematch.h and symgraph.h are
 template headers. Left old versions of stuff commented out.
 Added optional rehash operand to the setVrtxSize function, left size-only parameterized one as a wrapper around the new one.
 Finished moviematch.h Load(), but can't test because compile errors.
+A.K.: Fixed dumb typos and other mistakes that Brian pointed out.
