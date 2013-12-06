@@ -8,7 +8,6 @@
 
 #include <moviematch.h>
 #include <xstring.h>
-#include <xstring.cpp>
 
 int main()
 {
