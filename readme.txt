@@ -29,5 +29,5 @@ Added optional rehash operand to the setVrtxSize function, left size-only parame
 Finished moviematch.h Load(), but can't test because compile errors.
 A.K.: Fixed dumb typos and other mistakes that Brian pointed out.
 B.H.: Began laying out MovieDistance, based on BFSurvey in project4.
-B.H.: Added control structures, NextNeighbor function for operating MovieDistance. Still need to deal with going from actor
-to number and vice versa. Add functions in symgraph.h?
+B.H.: Added control structures, NextNeighbor function for operating MovieDistance. Still need to deal with going from actor to number and vice versa. Add functions in symgraph.h?
+A.K.: Fixed compilation bugs along with understanding what the problem was (no object files for the code used from $LIB/cpp/ nor #include clauses for the .cpp used therein.

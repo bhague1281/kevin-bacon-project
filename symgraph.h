@@ -19,7 +19,7 @@ namespace fsu
   public:
     typedef S                                   Vertex;
     typedef typename ALUGraph<N>::AdjIterator   AdjIterator;
-    typedef hashclass::MM<fsu::String>          H;
+    typedef typename hashclass::MM<fsu::String> H;
 
     void   SetVrtxSize  (N n);
     void   SetVrtxSize  (N n, bool rehash);
@@ -95,11 +95,11 @@ namespace fsu
   
   template <typename S, typename N>
   SymbolGraph<S,N>::SymbolGraph(N n)
-  : g_((size_t)n), s2n_((size_t)n), n2s_((size_t)n), size_(n) {}
+  : g_((size_t)n), s2n_((size_t)n, 1), n2s_((size_t)n), size_(0) {}
   
   template <typename S, typename N>
   SymbolGraph<S,N>::SymbolGraph(N n , bool bucketNumPrime)
-  : g_((size_t)n), s2n_((size_t)n, bucketNumPrime), n2s_((size_t)n), size_(n){}
+  : g_((size_t)n), s2n_((size_t)n, bucketNumPrime), n2s_((size_t)n), size_(0){}
   
   template <typename S, typename N>
   void SymbolGraph<S,N>::SetVrtxSize(N n)
@@ -125,8 +125,8 @@ namespace fsu
       {
         s2n_.Put(n2s_[i], (N)i); /*n2s_[i] is string/key, i is number/data*/
       }
+      size_ = n;
     }
-    size_ = n;
   }
   
   template <typename S, typename N>
@@ -226,15 +226,15 @@ namespace fsu
   \**/
   template <typename S, typename N>
   SymbolDirectedGraph<S,N>::SymbolDirectedGraph()
-  : g_(), s2n_(1), n2s_(), size_(0) {}
+  : g_(), s2n_(1, 1), n2s_(), size_(0) {}
   
   template <typename S, typename N>
   SymbolDirectedGraph<S,N>::SymbolDirectedGraph(N n)
-  : g_((size_t)n), s2n_((size_t)n), n2s_((size_t)n), size_(n) {}
+  : g_((size_t)n), s2n_((size_t)n, 1), n2s_((size_t)n), size_(0) {}
   
   template <typename S, typename N>
   SymbolDirectedGraph<S,N>::SymbolDirectedGraph(N n, bool bucketNumPrime)
-  : g_((size_t)n), s2n_((size_t)n, bucketNumPrime), n2s_((size_t)n), size_(n){}
+  : g_((size_t)n), s2n_((size_t)n, bucketNumPrime), n2s_((size_t)n), size_(0){}
   
   template <typename S, typename N>
   void SymbolDirectedGraph<S,N>::SetVrtxSize(N n)

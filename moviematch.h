@@ -4,10 +4,12 @@
 #include <iostream>
 #include <fstream>
 #include <cstring>
-#include <deque.h>
+//#include <deque.h>
 #include <cstdlib> /*For "exit()", used but not really needed.*/
 #include <xstring.h>
 #include <symgraph.h>
+/*All of these might be unneeded, but slapped in because maybe fixes
+compilation.*/
 
 size_t const dEF_SIZE = 128;
 size_t const dEF_MULT = 2;
@@ -19,7 +21,7 @@ char const * const wTF = "This should never happen!\n";
 class MovieMatch
 {
 public:
-  typedef typename fsu::SymbolGraph <fsu::String, size_t>::AdjIterator AdjIterator
+  //typedef typename fsu::SymbolGraph <fsu::String, size_t>::AdjIterator AdjIterator
 
   MovieMatch (char const * baseActor);
 
@@ -34,22 +36,25 @@ public:
 private:
   char* baseActor_;
   typename fsu::SymbolGraph <fsu::String, size_t> sg_;
-  
+  /*
   fsu::Vector < bool >          visited_;
   fsu::Vector < unsigned long > distance_;
   fsu::Vector < AdjIterator >   neighbor_;
   fsu::Deque < fsu::String >    conQ_;
   AdjIterator NextNeighbor(fsu::String v);
-  
+  */
   int ParseSubStr(std::istream & is, fsu::String & str);
   char * ResizeCStr(char * cstr, size_t sizeOld, size_t sizeNew);
   
 };
 
-MovieMatch::MovieMatch(char const * baseActor) : baseActor_(0), sg_(),
-  distance_ (sg_.VrtxSize(), 1 + sg_.EdgeSize()),
+MovieMatch::MovieMatch(char const * baseActor) : baseActor_(0), sg_()//,
+/* sg_ is either uninitialized or just initialized blank at this point; there
+is no way for it's VrtxSize or EdgeSize to be anything but zero here.
+*/
+  /*distance_ (sg_.VrtxSize(), 1 + sg_.EdgeSize()),
   visited_ (sg_.VrtxSize(), 0),
-  neighbor_ (sg_.VrtxSize()), conQ_()
+  neighbor_ (sg_.VrtxSize()), conQ_()*/
 {
   size_t length = strlen(baseActor);
   baseActor_ = new char [length + 1];
@@ -57,8 +62,8 @@ MovieMatch::MovieMatch(char const * baseActor) : baseActor_(0), sg_(),
   strcpy(baseActor_,baseActor);
   //sg_();
   
-  for (size_t i = 0; i < sg_.VrtxSize(); ++i)
-    neighbor_[i] = sg_.Begin(i);
+  /*for (size_t i = 0; i < sg_.VrtxSize(); ++i)
+    neighbor_[i] = sg_.Begin(i);*/
 }
 
 
@@ -165,34 +170,34 @@ char * MovieMatch::ResizeCStr(char * cstr, size_t sizeOld, size_t sizeNew)
 
 unsigned long MovieMatch::MovieDistance(char const * actor)
 {
-  conQ_.PushBack(baseActor_);
-  visited_[/*actor to number*/] = true;
+/*  conQ_.PushBack(baseActor_);
+  visited_[/ *actor to number* /] = true;
   
   while (!conQ_.Empty())
   {
     fsu::String f = conQ_.Front();
     fsu::String n = *NextNeighbor(f);
     AdjIterator l = NextNeighbor(f)++;
-    if (l != sg_.End(f) && visited[/*n to number*/] == false)
+    if (l != sg_.End(f) && visited[/ *n to number* /] == false)
     {
       conQ_.PushBack(n);
-      visited_[/*n to number*/] = true;
-      distance_[/* n to number*/] = distance_[/*f to number*/] + 1;
+      visited_[/ *n to number* /] = true;
+      distance_[/ * n to number* /] = distance_[/ *f to number* /] + 1;
       if (n.equals(actor))
       {
-        return distance[/*n to number*/] / 2;
+        return distance[/ *n to number* /] / 2;
       }
     }
     else
       conQ_.PopFront();
   }
-  
+  */
   return 0;
 }
 
-typename MovieMatch::AdjIterator MovieMatch::NextNeighbor(fsu::String v)
+/*typename MovieMatch::AdjIterator MovieMatch::NextNeighbor(fsu::String v)
 {
-  return neighbor_[/*v to number*/];
-}
+  return neighbor_[/ *v to number* /];
+}*/
 
 #endif
