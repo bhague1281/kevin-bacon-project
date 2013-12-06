@@ -31,3 +31,7 @@ A.K.: Fixed dumb typos and other mistakes that Brian pointed out.
 B.H.: Began laying out MovieDistance, based on BFSurvey in project4.
 B.H.: Added control structures, NextNeighbor function for operating MovieDistance. Still need to deal with going from actor to number and vice versa. Add functions in symgraph.h?
 A.K.: Fixed compilation bugs along with understanding what the problem was (no object files for the code used from $LIB/cpp/ nor #include clauses for the .cpp used therein.
+A.K.: Verified and tested the parsing of Load works correctly (didn't test if
+it saved everything to database right).
+A.K.: Patched up compile errors in the above contribution by B.H.
+A.K.: Added "clean" to makefile to help delete old builds' files.

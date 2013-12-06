@@ -95,7 +95,7 @@ namespace fsu
   
   template <typename S, typename N>
   SymbolGraph<S,N>::SymbolGraph(N n)
-  : g_((size_t)n), s2n_((size_t)n, 1), n2s_((size_t)n), size_(0) {}
+  : g_((size_t)n), s2n_((size_t)n), n2s_((size_t)n), size_(0) {}
   
   template <typename S, typename N>
   SymbolGraph<S,N>::SymbolGraph(N n , bool bucketNumPrime)
@@ -226,11 +226,11 @@ namespace fsu
   \**/
   template <typename S, typename N>
   SymbolDirectedGraph<S,N>::SymbolDirectedGraph()
-  : g_(), s2n_(1, 1), n2s_(), size_(0) {}
+  : g_(), s2n_(1), n2s_(), size_(0) {}
   
   template <typename S, typename N>
   SymbolDirectedGraph<S,N>::SymbolDirectedGraph(N n)
-  : g_((size_t)n), s2n_((size_t)n, 1), n2s_((size_t)n), size_(0) {}
+  : g_((size_t)n), s2n_((size_t)n), n2s_((size_t)n), size_(0) {}
   
   template <typename S, typename N>
   SymbolDirectedGraph<S,N>::SymbolDirectedGraph(N n, bool bucketNumPrime)
