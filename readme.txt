@@ -36,3 +36,5 @@ it saved everything to database right).
 A.K.: Patched up compile errors in the above contribution by B.H.
 A.K.: Added "clean" to makefile to help delete old builds' files.
 B.H.: Fixed multiple declaration error by removing xstring.cpp from kb.cpp (alternate solution provided by Alexander).
+A.K.: Alternative 2 of the Load(). I think this works very well, unless I
+missed something it seems to be very fast.

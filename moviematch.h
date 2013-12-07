@@ -9,7 +9,8 @@
 #include <xstring.h>
 #include <symgraph.h>
 
-size_t const dEF_SIZE = 128;
+size_t const dEF_SIZE = 65536;
+size_t const dEF_SIZE_STR = 128;
 size_t const dEF_MULT = 2;
 char const * const eRR_GRAPH_CAP = "Error: Graph capacity smaller than graph!\n";
 char const * const eRR_STR_CAP = "Error: String Parser: i > strSize!\n";
@@ -43,6 +44,7 @@ private:
   AdjIterator NextNeighbor(fsu::String v);
   
   int ParseSubStr(std::istream & is, fsu::String & str);
+  int ParseSubStrNoop(std::istream & is);
   char * ResizeCStr(char * cstr, size_t sizeOld, size_t sizeNew);
   
 };
@@ -72,30 +74,40 @@ use default constructors to initialize the other variables blank.
 void MovieMatch::Load(char const * filename)
 {
   std::ifstream infile(filename);
-  /*Variant one (there might be others coded later for funsies*/
+  /*Variant two*/
   fsu::String curMovie = fsu::String(), str = fsu::String();
   int delim;
   bool movieNext = true;
-  size_t graphCap = dEF_SIZE; /*Current capacity of the graph*/
-  sg_.SetVrtxSize(graphCap);
-  /*One pass, creates vertices and edges as it goes, but without*/
-  while(infile.good())
+  size_t count;
+  /*Two pass, first pass counts delimiters blindly*/
+  for(count = 0; infile.good(); count += 1)
   {
-    /*If size reaches capacity, multiply capacity and resize graph.*/
-    if(graphCap == sg_.Size())
-    {
-      graphCap *= dEF_MULT;
-      sg_.SetVrtxSize(graphCap);
-    }
-    else if(graphCap < sg_.Size()) /*Protect against the 'impossible'.*/
-    {
-      std::cerr << eRR_GRAPH_CAP << wTF;
-      exit(1); /*Omfg abort everything*/
-    }
+    /*Parse through data ignoring everything*/
+    delim = ParseSubStrNoop(infile);
+  }
+  if(!infile.eof())
+  {
+    std::cerr << eRR_READ_FILE;
+    exit(1);
+  }
+  infile.clear();
+  infile.seekg(0, infile.beg);
+  /*Above a certain count it seems better to set a fixed smaller fixes size*/
+  /*Not sure why though. (Vertex Size still increases though.)*/
+  if(count > 10000)
+  {
+    count = 10000;
+  }
+  sg_.SetVrtxSize(count);
+  for(count = 0; infile.good(); count += 1)
+  {
+//std::cout << count << '\n';
+//std::cout << sg_.Size() << '\n';
+//std::cout << sg_.VrtxSize() << '\n';
     /*Get movie title or actor name*/
     delim = ParseSubStr(infile, str);
-    //std::cout << str << std::endl; //Extra statement to debug split strings.
-    //std::cout << (char)delim; //Extra statement to debug splitting by delim.
+//std::cout << str << std::endl; //Extra statement to debug split strings.
+//std::cout << (char)delim; //Extra statement to debug splitting by delim.
     /*both actors and movies are vertexes. Push() accounts for duplicates.*/
     sg_.Push(str);
     
@@ -114,9 +126,11 @@ void MovieMatch::Load(char const * filename)
       movieNext = true;
     }
   }
-  if(infile.fail())
+  
+  if(!infile.eof())
   {
     std::cerr << eRR_READ_FILE;
+std::cout << "test2";
   }
   infile.close();
 }
@@ -126,7 +140,7 @@ And yet no wheel herein reinvented was available in exactly the form needed
 for what we were doing here in the standard lib. Also, I am awesome. -A.K.*/
 int MovieMatch::ParseSubStr(std::istream & is, fsu::String & str)
 {
-  size_t i, strCap = dEF_SIZE;
+  size_t i, strCap = dEF_SIZE_STR;
   char * cstr = new char[strCap];
   int temp;
   
@@ -158,6 +172,13 @@ int MovieMatch::ParseSubStr(std::istream & is, fsu::String & str)
   
   str.Wrap(cstr);
   delete[] cstr;
+  return temp;
+}
+
+int MovieMatch::ParseSubStrNoop(std::istream & is)
+{
+  int temp;
+  while((temp = is.get()) != '\n' && temp != '/' && temp != EOF){}
   return temp;
 }
 

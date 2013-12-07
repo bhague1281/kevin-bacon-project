@@ -190,12 +190,16 @@ namespace fsu
       if(size_ < n2s_.Size())
       {
         n2s_[size_] = s;
-        s2n_.Rehash(size_ + 1); //Do we want to rehash here? Inefficient...
+        /*Do not want to rehash here: Inefficient! Extremely! (Tested)*/
       }
       else /*But otherwise we need to expand g_ and n2s_*/
       {
+        /*This never gets called if the client always does SetVrtxSize before
+        maxing out the previous set size*/
         g_.PushVertex();
         n2s_.PushBack(s);
+        /*PushVertex also does PushBack on internal vector. Vector PushBack is
+        efficient because it doubles capacity when out of room.*/
       }
       s2n_.Put(s, size_);
       size_+=1;
@@ -325,7 +329,7 @@ namespace fsu
       if(size_ < g_.Size())
       {
         n2s_[size_] = s;
-        s2n_.Rehash(size_ + 1); //Do we want to rehash here? Inefficient...
+        //s2n_.Rehash(size_ + 1); //Do we want to rehash here? Inefficient...
       }
       else /*But otherwise we need to expand g_ and n2s_*/
       {
