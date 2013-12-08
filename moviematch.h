@@ -202,23 +202,30 @@ Also, remember to wrap char * in fsu::String with Wrap().
 \*/
 unsigned long MovieMatch::MovieDistance(char const * actor)
 {
+  visited_.SetSize(sg_.VrtxSize(), false);
+  distance_.SetSize(sg_.VrtxSize(), 0);
+  neighbor_.SetSize(sg_.VrtxSize());
+  for (size_t i = 0; i < neighbor_.Size(); ++i)
+    neighbor_[i] = sg_.Begin(sg_.GetVertexMap()[i]);
+  conQ_.Clear();
+
   fsu::String str = fsu::String();
+  fsu::String theActor = fsu::String(actor);
   
-  str.Wrap(baseActor_);
   conQ_.PushBack(str);
-  visited_[sg_.GetSymbolMap().Get(str)] = true;
+  visited_[(size_t)sg_.GetSymbolMap().Get(str)] = true;
   
   while (!conQ_.Empty())
   {
     fsu::String f = conQ_.Front();
-    fsu::String n = (sg_.GetVertexMap())[*NextNeighbor(f)];
+    fsu::String n = fsu::String(sg_.GetVertexMap()[*NextNeighbor(f)]);
     AdjIterator l = (NextNeighbor(f))++;
-    if (l != sg_.End(f) && visited_[sg_.GetSymbolMap().Get(n)] == false)
+    if (l != sg_.End(f) && visited_[(size_t)sg_.GetSymbolMap().Get(n)] == false)
     {
       conQ_.PushBack(n);
-      visited_[sg_.GetSymbolMap().Get(n)] = true;
-      distance_[sg_.GetSymbolMap().Get(n)] = distance_[sg_.GetSymbolMap().Get(f)] + 1;
-      if(n == actor) /*fsu::String overloads == but doesn't define .equals()*/
+      visited_[(size_t)sg_.GetSymbolMap().Get(n)] = true;
+      distance_[(size_t)sg_.GetSymbolMap().Get(n)] = distance_[(size_t)sg_.GetSymbolMap().Get(f)] + 1;
+      if(n == theActor)
       {
         return distance_[sg_.GetSymbolMap().Get(n)] / 2;
       }
