@@ -38,3 +38,6 @@ A.K.: Added "clean" to makefile to help delete old builds' files.
 B.H.: Fixed multiple declaration error by removing xstring.cpp from kb.cpp (alternate solution provided by Alexander).
 A.K.: Alternative 2 of the Load(). I think this works very well, unless I
 missed something it seems to be very fast.
+B.H.: Fixed bracket error occuring in MovieDistance. The search (in terms of functionality) works, but
+the logic is still flawed. I'm guessing (?) it's due to the neighbor iterator being incorrect.
+B.H.: Bracket error fixed by correctly initializing control structures (visited_, neighbor_, distance_).
