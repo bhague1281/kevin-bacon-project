@@ -11,7 +11,7 @@
 
 int main()
 {
-  MovieMatch mm ("Kevin Bacon");
+  MovieMatch mm ("Bacon, Kevin");
   mm.Load("movies.txt");
   std::cout << "Welcome to Kevin Bacon\n";
   fsu::String actor = "1";
