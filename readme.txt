@@ -41,3 +41,8 @@ missed something it seems to be very fast.
 B.H.: Fixed bracket error occuring in MovieDistance. The search (in terms of functionality) works, but
 the logic is still flawed. I'm guessing (?) it's due to the neighbor iterator being incorrect.
 B.H.: Bracket error fixed by correctly initializing control structures (visited_, neighbor_, distance_).
+A.K.: Finished up MovieDistance, ironed out bugs, ensured that non-existant
+actors or ones with no link to Kevin Bacon are reported correctly. (Not
+thoroughly tested.)
+A.K.: Fixed the (by now refactored out from MovieDistance) search metadata
+resetting code.

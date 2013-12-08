@@ -30,44 +30,36 @@ public:
 
   unsigned long MovieDistance(char const * actor);
   // returns the number of movies required to get from actor to baseActor_
-
-  //...
+  
+  unsigned long UnconnectedVal();
 
 private:
   char * baseActor_;
   typename fsu::SymbolGraph <fsu::String, size_t> sg_;
   
+  /*Helper data for MovieDistance*/
   fsu::Vector < bool >          visited_;
-  fsu::Vector < unsigned long > distance_;
+  fsu::Vector < size_t >        distance_;
   fsu::Vector < AdjIterator >   neighbor_;
-  fsu::Deque < fsu::String >    conQ_;
-  AdjIterator NextNeighbor(fsu::String v);
+  fsu::Deque < size_t >         conQ_;
   
+  /*Helper functions for MovieDistance*/
+  AdjIterator NextNeighbor(fsu::String v);
+  void ResetSearchMetadata();
+  
+  /*Helper functions for Load*/
   int ParseSubStr(std::istream & is, fsu::String & str);
   int ParseSubStrNoop(std::istream & is);
   char * ResizeCStr(char * cstr, size_t sizeOld, size_t sizeNew);
-  
 };
 
 MovieMatch::MovieMatch(char const * baseActor)
 : baseActor_(0), sg_(), visited_(), distance_(), neighbor_(), conQ_()
-/*
-sg_ is either uninitialized or just initialized blank at this point; there is
-no way for it's VrtxSize or EdgeSize to be anything but zero here, so we just
-use default constructors to initialize the other variables blank.
-*/
 {
   size_t length = strlen(baseActor);
   baseActor_ = new char [length + 1];
   baseActor_[length] = '\0';
   strcpy(baseActor_,baseActor);
-  
-  /* This needs to go somewhere else, it does nothing here.
-  for (size_t i = 0; i < sg_.VrtxSize(); ++i)
-  {
-    neighbor_[i] = sg_.Begin(i);
-  }
-  */
 }
 
 
@@ -202,44 +194,98 @@ Also, remember to wrap char * in fsu::String with Wrap().
 \*/
 unsigned long MovieMatch::MovieDistance(char const * actor)
 {
-  visited_.SetSize(sg_.VrtxSize(), false);
-  distance_.SetSize(sg_.VrtxSize(), 0);
-  neighbor_.SetSize(sg_.VrtxSize());
-  for (size_t i = 0; i < neighbor_.Size(); ++i)
-    neighbor_[i] = sg_.Begin(sg_.GetVertexMap()[i]);
-  conQ_.Clear();
-
-  fsu::String str = fsu::String();
-  fsu::String theActor = fsu::String(actor);
+  ResetSearchMetadata(); /*Initialization refactored away for clarity.*/
   
-  conQ_.PushBack(str);
-  visited_[(size_t)sg_.GetSymbolMap().Get(str)] = true;
+  /*Generic string object to hold all temporary strings.*/
+  fsu::String str = fsu::String(actor); /*Start with searched actor name.*/
+  /*Generic size_t vars to hold the numerical index for each vertex.*/
+  size_t neighbor, v;
   
+  if(!sg_.GetSymbolMap().Retrieve(str, v))
+  {
+    return 0; /*Abort if actor supplied isn't in graph.*/
+  }
+  
+  conQ_.PushBack(v);
+  visited_[v] = true;
+  distance_[v] = 0;
+  
+  AdjIterator neighborItr;
   while (!conQ_.Empty())
   {
-    fsu::String f = conQ_.Front();
-    fsu::String n = fsu::String(sg_.GetVertexMap()[*NextNeighbor(f)]);
-    AdjIterator l = (NextNeighbor(f))++;
-    if (l != sg_.End(f) && visited_[(size_t)sg_.GetSymbolMap().Get(n)] == false)
+    v = conQ_.Front();
+    str = (sg_.GetVertexMap())[v];
+    neighborItr = NextNeighbor(str);
+    
+    /*This ensures we try all neighbors*/
+    if(neighborItr != sg_.GetAbstractGraph().End(v))
     {
-      conQ_.PushBack(n);
-      visited_[(size_t)sg_.GetSymbolMap().Get(n)] = true;
-      distance_[(size_t)sg_.GetSymbolMap().Get(n)] = distance_[(size_t)sg_.GetSymbolMap().Get(f)] + 1;
-      if(n == theActor)
+      neighbor = (size_t) *neighborItr;
+      /*Iterator *s to the underlying graph's vertex, not a string.*/
+      if(visited_[neighbor] == false) /*Skip vertexes visited prior*/
       {
-        return distance_[sg_.GetSymbolMap().Get(n)] / 2;
+        conQ_.PushBack(neighbor);
+        visited_[neighbor] = true;
+        distance_[neighbor] = distance_[v] + 1;
+        if(neighbor == sg_.GetSymbolMap().Get(fsu::String(baseActor_)))
+        {
+          return distance_[neighbor] / 2;
+        }
       }
     }
     else
+    {
       conQ_.PopFront();
+    }
   }
   
-  return 0;
+  return 1 + sg_.EdgeSize();
 }
 
 typename MovieMatch::AdjIterator MovieMatch::NextNeighbor(fsu::String v)
 {
-  return neighbor_[sg_.GetSymbolMap().Get(v)];
+  /*Convert fsu::String v to numerical vertex index*/
+  size_t i = sg_.GetSymbolMap().Get(v);
+  /*Assumption: the current neighbor_[v] is unvisited*/
+  AdjIterator nn = neighbor_[i]; /*Save current next neighbor for return.*/
+  
+  /*Assumption: returned neighbor will be visited before this is called
+  again, so the next neighbor will be the first unvisited one by then.*/
+  /*Except we don't want to ++ to the end/tail_ link/vertex*/
+  /*Use g_ from sg_ to save sg_'s end the second s2n_ lookup.*/
+  if(neighbor_[i] != sg_.GetAbstractGraph().End(i))
+  {
+    ++(neighbor_[i]); /*Increment in-place to prep for next call.*/
+  }
+  return nn;
+}
+
+void MovieMatch::ResetSearchMetadata()
+{
+  /*SetSize with a value will only set elements from the current size on, so to
+  make this work as a reset rather than just initialization, we set the size to
+  zero so that the later SetSize call initializes the whole vector.*/
+  visited_.SetSize(0);
+  distance_.SetSize(0);
+  /*Not needed for neighbor_ which is set in a loop anyway*/
+  
+  visited_.SetSize(sg_.VrtxSize(), false);
+  /*Initialize all distances to longer than possible.*/
+  distance_.SetSize(sg_.VrtxSize(), 1 + sg_.EdgeSize());
+  //Set the neighbor_ to each Vertex' first neighbor in the neighbor list.
+  neighbor_.SetSize(sg_.VrtxSize());
+  for (size_t i = 0; i < neighbor_.Size(); ++i)
+  {
+    //neighbor_[i] = sg_.Begin(sg_.GetVertexMap()[i]);
+    /*More efficient to get g_ from within sg_ than to translate i back/forth*/
+    neighbor_[i] = sg_.GetAbstractGraph().Begin(i);
+  }
+  conQ_.Clear();
+}
+
+unsigned long MovieMatch::UnconnectedVal()
+{
+  return 1 + sg_.EdgeSize();
 }
 
 #endif
