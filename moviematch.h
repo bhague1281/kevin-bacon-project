@@ -1,3 +1,10 @@
+/*
+    moviematch.h
+
+    The MIT License (MIT)                                                        
+                                                                                     Copyright (c) 2013 Lacher, Kozhevnikov, Hague, Tanner 
+*/
+
 #ifndef _MOVIEMATCH_H
 #define _MOVIEMATCH_H
 
@@ -25,12 +32,13 @@ public:
 
   MovieMatch (char const * baseActor);
 
-  void Load (char const * filename);
   // loads a movie/actor file
+  void Load (char const * filename);
 
-  unsigned long MovieDistance(char const * actor);
   // returns the number of movies required to get from actor to baseActor_
+  unsigned long MovieDistance(char const * actor);
   
+  // returns invalid value number (1 more than number of vertices)
   unsigned long UnconnectedVal();
 
 private:
@@ -46,6 +54,7 @@ private:
   /*Helper functions for MovieDistance*/
   AdjIterator NextNeighbor(fsu::String v);
   void ResetSearchMetadata();
+  bool CompareIgnoreCase(fsu::String a, fsu::String b); 
   
   /*Helper functions for Load*/
   int ParseSubStr(std::istream & is, fsu::String & str);
@@ -66,40 +75,43 @@ MovieMatch::MovieMatch(char const * baseActor)
 void MovieMatch::Load(char const * filename)
 {
   std::ifstream infile(filename);
+
   /*Variant two*/
   fsu::String curMovie = fsu::String(), str = fsu::String();
   int delim;
   bool movieNext = true;
   size_t count;
+
   /*Two pass, first pass counts delimiters blindly*/
   for(count = 0; infile.good(); count += 1)
   {
     /*Parse through data ignoring everything*/
     delim = ParseSubStrNoop(infile);
   }
+
   if(!infile.eof())
   {
     std::cerr << eRR_READ_FILE;
     exit(1);
   }
+
   infile.clear();
   infile.seekg(0, infile.beg);
+
   /*Above a certain count it seems better to set a fixed smaller fixes size*/
   /*Not sure why though. (Vertex Size still increases though.)*/
   if(count > 10000)
   {
     count = 10000;
   }
+
   sg_.SetVrtxSize(count);
+
   for(count = 0; infile.good(); count += 1)
   {
-//std::cout << count << '\n';
-//std::cout << sg_.Size() << '\n';
-//std::cout << sg_.VrtxSize() << '\n';
     /*Get movie title or actor name*/
     delim = ParseSubStr(infile, str);
-//std::cout << str << std::endl; //Extra statement to debug split strings.
-//std::cout << (char)delim; //Extra statement to debug splitting by delim.
+
     /*both actors and movies are vertexes. Push() accounts for duplicates.*/
     sg_.Push(str);
     
@@ -122,7 +134,7 @@ void MovieMatch::Load(char const * filename)
   if(!infile.eof())
   {
     std::cerr << eRR_READ_FILE;
-std::cout << "test2";
+    std::cout << "test2";
   }
   infile.close();
 }
@@ -150,6 +162,7 @@ int MovieMatch::ParseSubStr(std::istream & is, fsu::String & str)
     }
     cstr[i] = (char) temp;
   }
+
   if(i == strCap)
   {
     strCap += 1;
@@ -160,8 +173,9 @@ int MovieMatch::ParseSubStr(std::istream & is, fsu::String & str)
     std::cerr << eRR_STR_CAP << wTF;
     exit(1); /*Omfg panic!*/
   }
+
   cstr[i] = '\0';
-  
+ 
   str.Wrap(cstr);
   delete[] cstr;
   return temp;
@@ -170,7 +184,7 @@ int MovieMatch::ParseSubStr(std::istream & is, fsu::String & str)
 int MovieMatch::ParseSubStrNoop(std::istream & is)
 {
   int temp;
-  while((temp = is.get()) != '\n' && temp != '/' && temp != EOF){}
+  while((temp = is.get()) != '\n' && temp != '/' && temp != EOF) {}
   return temp;
 }
 
@@ -178,26 +192,29 @@ char * MovieMatch::ResizeCStr(char * cstr, size_t sizeOld, size_t sizeNew)
 {
   char * cstrOld = cstr;
   cstr = new char[sizeNew];
-  memcpy(cstr, cstrOld, sizeOld);
+
   /*memcpy instead of strcpy or strncpy because if we're here, we don't need
   null character checks or the other overhead of the 'str' family.*/
+  memcpy(cstr, cstrOld, sizeOld);
+
   delete[] cstrOld;
   return cstr;
 }
 
-/*\
- * Reference:
-To convert name to index: sg_.GetSymbolMap().Get(fsu::String);
-To convert index to name: (sg_.GetVertexMap())[index];
+/*
+  Reference:
+  To convert name to index: sg_.GetSymbolMap().Get(fsu::String);
+  To convert index to name: (sg_.GetVertexMap())[index];
 
-Also, remember to wrap char * in fsu::String with Wrap().
-\*/
+  Also, remember to wrap char * in fsu::String with Wrap().
+*/
 unsigned long MovieMatch::MovieDistance(char const * actor)
 {
   ResetSearchMetadata(); /*Initialization refactored away for clarity.*/
   
   /*Generic string object to hold all temporary strings.*/
   fsu::String str = fsu::String(actor); /*Start with searched actor name.*/
+
   /*Generic size_t vars to hold the numerical index for each vertex.*/
   size_t neighbor, v;
   
@@ -211,6 +228,7 @@ unsigned long MovieMatch::MovieDistance(char const * actor)
   distance_[v] = 0;
   
   AdjIterator neighborItr;
+
   while (!conQ_.Empty())
   {
     v = conQ_.Front();
@@ -220,13 +238,15 @@ unsigned long MovieMatch::MovieDistance(char const * actor)
     /*This ensures we try all neighbors*/
     if(neighborItr != sg_.GetAbstractGraph().End(v))
     {
-      neighbor = (size_t) *neighborItr;
       /*Iterator *s to the underlying graph's vertex, not a string.*/
+      neighbor = (size_t) *neighborItr;
+
       if(visited_[neighbor] == false) /*Skip vertexes visited prior*/
       {
         conQ_.PushBack(neighbor);
         visited_[neighbor] = true;
         distance_[neighbor] = distance_[v] + 1;
+
         if(neighbor == sg_.GetSymbolMap().Get(fsu::String(baseActor_)))
         {
           return distance_[neighbor] / 2;
@@ -239,13 +259,14 @@ unsigned long MovieMatch::MovieDistance(char const * actor)
     }
   }
   
-  return 1 + sg_.EdgeSize();
+  return UnconnectedVal();
 }
 
 typename MovieMatch::AdjIterator MovieMatch::NextNeighbor(fsu::String v)
 {
   /*Convert fsu::String v to numerical vertex index*/
   size_t i = sg_.GetSymbolMap().Get(v);
+
   /*Assumption: the current neighbor_[v] is unvisited*/
   AdjIterator nn = neighbor_[i]; /*Save current next neighbor for return.*/
   
@@ -270,10 +291,13 @@ void MovieMatch::ResetSearchMetadata()
   /*Not needed for neighbor_ which is set in a loop anyway*/
   
   visited_.SetSize(sg_.VrtxSize(), false);
+
   /*Initialize all distances to longer than possible.*/
   distance_.SetSize(sg_.VrtxSize(), 1 + sg_.EdgeSize());
+
   //Set the neighbor_ to each Vertex' first neighbor in the neighbor list.
   neighbor_.SetSize(sg_.VrtxSize());
+
   for (size_t i = 0; i < neighbor_.Size(); ++i)
   {
     //neighbor_[i] = sg_.Begin(sg_.GetVertexMap()[i]);

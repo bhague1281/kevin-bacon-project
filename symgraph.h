@@ -1,3 +1,10 @@
+/*
+    symgraph.h
+    
+    The MIT License (MIT)                                                                                                                                         
+    Copyright (c) 2013 Lacher, Kozhevnikov, Hague, Tanner 
+*/
+
 #ifndef _SYMGRAPH_H
 #define _SYMGRAPH_H
 
