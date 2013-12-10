@@ -80,6 +80,11 @@ B.H.: Polished the readme.txt file in order to include our development and
 testing methods.
 B.H.: Polished other files to fix any confusing formatting.
 B.H.: Performed official testing with several actors (see Testing). 
+B.T.: Additional features added to kevinbacon.cpp to allow various types
+of input by the user
+B.T.: Additional testing with new features added, bounds checking
+B.T.: Modifications to account for middle names, initials, and
+roman numeral characters
 
 Testing
 ---------------------------------------------------------------------
@@ -101,10 +106,35 @@ Slovick, Sam             2                      2
 Waite, Ralph             2                      2
 Kendrick, Anna (I)       3                      3
 
+Input tested             Action                    Expected Result
+---------------------------------------------------------------------
+<blank>                  Reprints prompt           Reprint prompt
+kEvIn bACOn              Matches Kevin Bacon       Match Kevin Bacon
+sMITH, mARTHA            Matches Smith, Martha     Match Smith, Martha
+misty dickinson          Matches Dickinson, Misty  Match Dickinson, Misty
+ Drake, Joyful           No Match(beginning space) No Match(beginning space)
+Cruise ,Tom              No Match(comma position)  No Match(comma position)
+Slovick, Sam Bacon       No Match(extra name)      No Match(extra name)
+Kendrick, Anna (I)       3 Name Match              3 Name Match
+Leonard Earl Howze       Match with BN = 2         Match with BN = 2
+Howze, Leonard Earl      Match with BN = 2         Match with BN = 2
+C.B. Spencer             Match with BN = 2         Match with BN = 2
+
 Operation
 ---------------------------------------------------------------------
 In order to operate the program, kevinbacon.x must first be built by running
 the including makefile. Once the executable is built and run, the program takes
 a few seconds in order to import the movies.txt file. Once loading is complete,
-the user can input actors (currently in Lastname, Firstname format) in order
-to find the "Bacon Number."
+the user can input actors in order to find the "Bacon Number."  Actor names
+may be input in any of the following formats:
+
+[lastname], [firstname]
+[lastname], [firstname] [middlename]
+[lastname], [firstname] [additionalcharacters]
+[firstname] [lastname]
+[firstname] [middlename] [lastname]
+[firstname] [additionalcharacters] [lastname]
+
+Additional notes: initials in names may be matched if they are in that format in
+the movies.txt file (ex. C.B. Spencer).  Any capitalization will be matched to a name
+(i.e. kENDRICK, aNNa (i) == Kendrick, Anna (I))

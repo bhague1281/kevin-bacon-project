@@ -94,16 +94,23 @@ fsu::String FormatName(fsu::String inputName)
     
     str = first + " " + last;	// intentional misformat that will be corrected on return statement
     
-    //return inputName;
+    //std::cout << "Name now: " << str << '\n';
+    
   }
   
   foundSpace = str.find(' ');
     
   // if there is no comma and no space, no match will be found...return
   if (foundSpace == std::string::npos)
-  {
-    //std::cout << "You must enter an actor's first and last name\n\n";
     return inputName;
+  
+  std::size_t foundSpace2;
+  // find the second space for actors with more than 2 names
+  foundSpace2 = str.find(' ', foundSpace + 1);	
+  // make sure the space isn't at the end for when we check indexes
+  if (foundSpace2 != std::string::npos && foundSpace2 < str.size() - 1)	
+  {
+    foundSpace = foundSpace2;
   }  
   
   // if there is no comma and a space, convert it to correct format
@@ -119,14 +126,38 @@ fsu::String AddGrammar(std::string str, size_t indexOfSpace)
   last = CorrectCapitalization(last);
   
   fsu::String actorName = last + ", " + first;
+  
+  //std::cout << "Final name: " << actorName << '\n';
+  
   return actorName;
 }
 
 fsu::String CorrectCapitalization(fsu::String a)
 {
+  bool passedSpace = false;
+  bool passedParen = false;
+  // capitalize the first letter
+  // some names have more than two names
+  // for those occasions, capitalize the next letter
+  // for text inside parens, capitalize it
   a[0] = toupper(a[0]);
   for (size_t i = 1; i < a.Size(); ++i)
-    a[i] = tolower(a[i]);
+  {    
+    if (a[i - 1] == ' ' || a[i - 1] == '.')
+      passedSpace = true;
+    if (a[i] == '(')
+      passedParen = true;
+    
+    if (!passedSpace && !passedParen)
+    {
+      a[i] = tolower(a[i]);
+    }
+    else
+    {
+      a[i] = toupper(a[i]);
+      passedSpace = false;
+    }
+  }
   return a;
 }
 
